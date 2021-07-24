@@ -1,11 +1,6 @@
-FROM nginx
-SHELL ["bash", "-c"]
+FROM nginx:alpine
 WORKDIR /usr/share/nginx
-RUN apt update && apt install -y openssl
-COPY . .
-RUN rm -fr html && ln -sfn docs html && . ssl-keygen \
- && openssl dhparam 256 > tls/dhparam.pem \
- && cp nginx.conf /etc/nginx/nginx.conf \
- && cp default.conf /etc/nginx/conf.d/default.conf
-EXPOSE 443 80
-CMD ["nginx", "-g", "daemon off;"]
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY default.conf /etc/nginx/conf.d/default.conf
+COPY dist html
+RUN chown -R nginx. html
